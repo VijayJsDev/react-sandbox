@@ -1,0 +1,9 @@
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-weight: 900;
+  font-size: 2rem;
+  background-color: brown;
+  color: white;
+}

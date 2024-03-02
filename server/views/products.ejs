@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Prices</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f8f8;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      nav {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      nav h1 {
+        margin: 0;
+      }
+
+      nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      nav ul li {
+        margin-right: 20px;
+      }
+
+      nav ul li:last-child {
+        margin-right: 0;
+      }
+
+      nav ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      #products {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .product {
+        width: 300px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+      }
+
+      .product h2 {
+        margin-top: 0;
+        color: #333;
+      }
+
+      .product p {
+        margin: 10px 0;
+        color: #666;
+      }
+
+      .product button {
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .product button:hover {
+        background-color: #0056b3;
+      }
+
+      #continueToCart {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      #continueToCart:hover {
+        background-color: #0056b3;
+      }
+
+      #logoutBtn {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      #logoutBtn:hover {
+        background-color: #c82333;
+      }
+
+      @media screen and (max-width: 600px) {
+        .product {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <h1>Product Prices</h1>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <button id="logoutBtn">Logout</button>
+    </nav>
+
+    <div id="products">
+      <!-- Product 1 -->
+      <div class="product">
+        <h2>Product 1</h2>
+        <p>
+          Price: <span class="old-price">$100</span>
+          <span class="new-price">$80</span>
+        </p>
+        <button class="decrease">-</button>
+        <span class="quantity">1</span>
+        <button class="increase">+</button>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product">
+        <h2>Product 2</h2>
+        <p>
+          Price: <span class="old-price">$80</span>
+          <span class="new-price">$60</span>
+        </p>
+        <button class="decrease">-</button>
+        <span class="quantity">1</span>
+        <button class="increase">+</button>
+      </div>
+      <!-- Add more products here -->
+    </div>
+
+    <button id="continueToCart">Continue to Cart</button>
+
+    <script>
+      // Add your JavaScript code here
+      const products = document.querySelectorAll(".product");
+
+      products.forEach((product) => {
+        const oldPrice = parseFloat(
+          product.querySelector(".old-price").innerText.replace("$", "")
+        );
+        const newPrice = parseFloat(
+          product.querySelector(".new-price").innerText.replace("$", "")
+        );
+        const quantityElement = product.querySelector(".quantity");
+        const decreaseButton = product.querySelector(".decrease");
+        const increaseButton = product.querySelector(".increase");
+
+        decreaseButton.addEventListener("click", () => {
+          let quantity = parseInt(quantityElement.innerText);
+          if (quantity > 1) {
+            quantity--;
+            quantityElement.innerText = quantity;
+            updatePrice();
+          }
+        });
+
+        increaseButton.addEventListener("click", () => {
+          let quantity = parseInt(quantityElement.innerText);
+          quantity++;
+          quantityElement.innerText = quantity;
+          updatePrice();
+        });
+
+        function updatePrice() {
+          const quantity = parseInt(quantityElement.innerText);
+          const totalPrice = newPrice * quantity;
+          product.querySelector(".new-price").innerText = `$${totalPrice}`;
+        }
+      });
+
+      // Continue to Cart button functionality
+      document
+        .getElementById("continueToCart")
+        .addEventListener("click", () => {
+          // Create an array to store cart items
+          const cartItems = [];
+
+          // Loop through each product to collect cart items
+          products.forEach((product) => {
+            const name = product.querySelector("h2").innerText;
+            const price = parseFloat(
+              product.querySelector(".new-price").innerText.replace("$", "")
+            );
+            const quantity = parseInt(
+              product.querySelector(".quantity").innerText
+            );
+
+            // Add the product to the cartItems array
+            cartItems.push({ name, price, quantity });
+          });
+
+          // Store the cart items in local storage
+          localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+          // Redirect to the cart page
+          window.location.href = "/cart";
+        });
+
+      // Logout button functionality
+      document.getElementById("logoutBtn").addEventListener("click", logout);
+
+      function logout() {
+        // Clear localStorage data
+        localStorage.removeItem("cartItems");
+        localStorage.removeItem("formData");
+
+        // Make an
+        fetch("/logout", {
+          method: "POST",
+          credentials: "same-origin", // Include cookies in the request
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}), // Empty body as we don't need to send any data
+        })
+          .then(() => {
+            // Redirect to the home page after successful logout
+            window.location.href = "/logout";
+          })
+          .catch((error) => {
+            console.error("Logout failed:", error);
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmation</title>
+<style>
+  /* General styles */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+  }
+
+  h1 {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  /* Container styles */
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #efffe7; /* Light green background */
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Button styles */
+  button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #dc3545; /* Redish color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #c82333; /* Darker redish color */
+  }
+
+  /* Details styles */
+  .details {
+    margin-bottom: 20px;
+  }
+
+  .details h2 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    color: #155724; /* Green text color */
+  }
+
+  .details p {
+    margin: 5px 0;
+  }
+
+  .tick-symbol {
+    margin-right: 10px;
+    font-size: 24px;
+  }
+  #btn-home{
+    background-color: #007bff;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<h1>Order Confirmation</h1>
+
+<div class="container">
+  <div class="details">
+    <h2><span class="tick-symbol">&#10003;</span>Your Details:</h2>
+    <p>Name: <span id="name"></span></p>
+    <p>Address: <span id="address"></span></p>
+    <p>Pincode: <span id="pincode"></span></p>
+  </div>
+
+  <div class="details">
+    <h2>Order Details:</h2>
+    <p>Selected products will be delivered in 2 days.</p>
+    <p>Please have exact change ready for cash on delivery.</p>
+    <p>Thank you for shopping with us!</p>
+  </div>
+
+  <button onclick="redirectToHomePage()" id="btn-home">Go to Homepage</button>
+  <button id="logoutBtn">Logout</button>
+</div>
+
+<script>
+  // Retrieve form data from local storage
+  const formData = JSON.parse(localStorage.getItem("formData"));
+
+  // Display form data
+  if (formData) {
+    document.getElementById("name").innerText = formData.name;
+    document.getElementById("address").innerText = formData.address;
+    document.getElementById("pincode").innerText = formData.pincode;
+  }
+
+  // Function to redirect to homepage
+  function redirectToHomePage() {
+    window.location.href = "/products";
+  }
+
+  function logout() {
+    // Clear localStorage data
+    localStorage.removeItem("cartItems");
+    localStorage.removeItem("formData");
+
+    // Make an AJAX POST request to the logout endpoint
+    fetch("/logout", {
+      method: "POST",
+      credentials: "same-origin", // Include cookies in the request
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}), // Empty body as we don't need to send any data
+    })
+      .then(() => {
+        // Redirect to the home page after successful logout
+        window.location.href = "/logout";
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+      });
+  }
+
+  // Attach logout function to logout button click event
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+</script>
+</body>
+</html>
